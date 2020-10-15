@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+npx mocha src/**/*.test.ts --extension ts -r ts-node/register

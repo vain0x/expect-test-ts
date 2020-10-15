@@ -1,0 +1,31 @@
+#!/bin/sh
+
+set -eu
+
+# Edit the test code to make it failing.
+sed -i 's/"BYE"/"bye"/g' src/example.test.ts
+
+# Check if it fails.
+set +e
+./run-test >/dev/null
+CODE=$?
+set -e
+
+if test $CODE -eq 0
+then
+    echo "ERROR: The test should fail but didn't."
+    exit 1
+fi
+
+# Accept the changes.
+ACCEPT=1 ./run-test >/dev/null
+
+# Check the modification.
+NUM=$(grep 'expect("bye", f, "BYE")' src/example.test.ts | wc -l)
+if test $NUM -ne 1
+then
+    echo "ERROR: The modification was not expected."
+    exit 1
+fi
+
+echo "OK" >&2
